@@ -87,6 +87,6 @@ MIT
 
 ## Autor
 
-Daniel González Cuétara – [@danny1998cuba]("https://github.com/danny1998cuba")
+Daniel González Cuétara – [@danny1998cuba](https://github.com/danny1998cuba)
 
 Este proyecto fue desarrollado como parte de un hackatón con enfoque en el uso avanzado de Clerk.
