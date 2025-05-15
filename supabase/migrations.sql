@@ -9,7 +9,7 @@ create type task_status as enum (
   'cancelled',
   'archived'
 );
-create type org_role as enum ('admin', 'member');
+create type org_role as enum ('org:admin', 'org:member');
 
 -- Tabla de usuarios (opcional para info adicional)
 create table users (
@@ -35,7 +35,7 @@ create table organizations (
 create table organization_members (
   organization_id text references organizations(id) on delete cascade,
   user_id text references users(id) on delete cascade,
-  role org_role default 'member',
+  role org_role default 'org:member',
   joined_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now(),
   primary key (organization_id, user_id)
@@ -86,7 +86,6 @@ create table comments (
 alter table boards enable row level security;
 alter table tasks enable row level security;
 alter table comments enable row level security;
-alter table organization_members enable row level security;
 
 -- Policies
 
@@ -222,30 +221,6 @@ create policy "Delete own comments"
 on comments for delete
 using (
   author_id = auth.jwt() ->> 'sub'
-);
-
--- Members
--- SELECT
-create policy "View members of current org"
-on organization_members for select
-using (
-  organization_id::text = auth.jwt() ->> 'org_id'
-);
-
--- INSERT (opcional para crear desde tu app; cuidado con seguridad)
-create policy "Allow insert into current org"
-on organization_members for insert
-with check (
-  organization_id::text = auth.jwt() ->> 'org_id'
-  and auth.jwt() ->> 'org_role' = 'org:admin'
-);
-
--- DELETE (solo de la misma organización)
-create policy "Allow delete in current org"
-on organization_members for delete
-using (
-  organization_id::text = auth.jwt() ->> 'org_id'
-  and auth.jwt() ->> 'org_role' = 'org:admin'
 );
 
 -- Triggers
