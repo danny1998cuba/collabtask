@@ -3,10 +3,10 @@ import { Github } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
   return (
     <div className="flex items-center justify-center h-screen flex-col gap-4 prose w-full !max-w-[unset] p-4">
-      <Image src="/images/collabtask-logo.png" alt="Logo" width={860} height={871} className="h-[75px] w-[75px] translate-x-4"/>
+      <Image src="/images/collabtask-logo.png" alt="Logo" width={860} height={871} className="h-[75px] w-[75px] translate-x-4" />
 
       <h1>CollabTask</h1>
 
