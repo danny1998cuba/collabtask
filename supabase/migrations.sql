@@ -94,7 +94,7 @@ alter table comments enable row level security;
 create policy "Select personal or org boards"
 on boards for select
 using (
-  (is_personal = true and created_by = auth.jwt() ->> 'sub') or
+  (is_personal = true and created_by = auth.jwt() ->> 'sub' and (auth.jwt() ->> 'org_id') is null) or
   (is_personal = false and organization_id::text = auth.jwt() ->> 'org_id')
 );
 
@@ -114,7 +114,7 @@ with check (
 create policy "Update own or org boards"
 on boards for update
 using (
-  (is_personal = true and created_by = auth.jwt() ->> 'sub') or
+  (is_personal = true and created_by = auth.jwt() ->> 'sub' and (auth.jwt() ->> 'org_id') is null) or
   (
     is_personal = false 
     and organization_id::text = auth.jwt() ->> 'org_id'
@@ -126,7 +126,7 @@ using (
 create policy "Delete own or org boards"
 on boards for delete
 using (
-  (is_personal = true and created_by = auth.jwt() ->> 'sub') or
+  (is_personal = true and created_by = auth.jwt() ->> 'sub' and (auth.jwt() ->> 'org_id') is null) or
   (
     is_personal = false 
     and organization_id::text = auth.jwt() ->> 'org_id'

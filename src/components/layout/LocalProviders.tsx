@@ -1,10 +1,13 @@
+import SupabaseProvider from "@/utils/supabase/client"
 import { ClerkProvider } from "@clerk/nextjs"
 import { PropsWithChildren } from "react"
 
 const LocalProviders = ({ children }: PropsWithChildren) => {
     return (
         <ClerkProvider>
-            {children}
+            <SupabaseProvider>
+                {children}
+            </SupabaseProvider>
         </ClerkProvider>
     )
 }
