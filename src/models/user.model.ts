@@ -8,3 +8,13 @@ export interface IUser {
     created_at: Date;
     updated_at: Date;
 }
+
+export interface IOrganizationMember {
+    organization_id: string
+    user_id: string
+    role: "org:admin" | "org:member"
+    joined_at: Date
+    updated_at: Date
+
+    user?: Partial<IUser>;
+}

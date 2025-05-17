@@ -47,7 +47,7 @@ export const deleteBoard = async (id: string): Promise<string> => {
     if (error) {
         response = { error: true, message: error.message }
     } else {
-        response = { error: false, message: "board udpated", data: null }
+        response = { error: false, message: "board deleted", data: null }
         revalidateTag("boards")
     }
 
