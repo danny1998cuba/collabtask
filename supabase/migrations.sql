@@ -65,6 +65,7 @@ create table tasks (
   title text not null,
   description text,
   status task_status default 'todo',
+  order integer not null,
   assigned_to text references users(id),
   created_by text references users(id),
   created_at timestamp with time zone default now(),

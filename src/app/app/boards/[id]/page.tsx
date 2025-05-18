@@ -6,7 +6,9 @@ import { createServerClient } from '@/utils/supabase/server';
 import { Plus, SquareKanban } from 'lucide-react';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { use } from 'react';
+import { Suspense, use } from 'react';
+import ClientHandler from './ClientHandler';
+import TasksSkeleton from '@/components/kanban/TasksSkeleton';
 
 interface Props {
     params: Promise<{
@@ -36,6 +38,7 @@ const BoardPage = ({ params }: Props) => {
 
     return (
         <>
+            <ClientHandler board={board} />
             <div className="flex justify-between w-full pt-2 pb-8 sticky top-[44px] bg-white z-[48]">
                 <h2 className='text-2xl font-semibold flex gap-2 items-center'><SquareKanban /> {board.name}</h2>
 
@@ -46,8 +49,9 @@ const BoardPage = ({ params }: Props) => {
                     </Button>
                 } />
             </div >
-
-            <TasksKanban boardId={board.id} />
+            <Suspense fallback={<TasksSkeleton />}>
+                <TasksKanban boardId={board.id} />
+            </Suspense>
         </>
     )
 }

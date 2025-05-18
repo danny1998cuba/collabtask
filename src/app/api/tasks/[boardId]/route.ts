@@ -8,7 +8,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ boar
     const select = query.get('select') || '*'
 
     const supabase = await createServerClient()
-    const boardsResponse = await supabase.from('tasks').select(select).eq("board_id", boardId).order("created_at", { ascending: false })
+    const boardsResponse = await supabase.from('tasks').select(select).eq("board_id", boardId).order("order", { ascending: true })
     const boards = boardsResponse.error ? [] : boardsResponse.data
 
     return NextResponse.json(boards)

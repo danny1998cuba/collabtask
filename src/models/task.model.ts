@@ -2,10 +2,10 @@ import { IBoard } from "./board.model";
 import { IUser } from "./user.model";
 
 export const TASKS_STATUS = {
-    'backlog': "Backlog",
+    // 'backlog': "Backlog",
     'todo': "To do",
     'in_progress': "In Progress",
-    'blocked': "Blocked",
+    // 'blocked': "Blocked",
     'in_review': "In Review",
     'done': "Done",
     'cancelled': "Cancelled",
@@ -18,6 +18,7 @@ export interface ITask {
     id: string;
     board_id: string;
     title: string;
+    order: number;
     description?: string;
     status: TaskStatus;
     assigned_to?: string | Partial<IUser>;

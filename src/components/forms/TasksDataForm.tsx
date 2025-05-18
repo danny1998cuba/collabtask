@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState, useTransition } from 'react'
+import React, { useEffect, useMemo, useState, useTransition } from 'react'
 import { useAuth } from '@clerk/nextjs'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -24,6 +24,7 @@ import { IOrganizationMember } from '@/models/user.model'
 import { useSupabase } from '@/utils/supabase/client'
 import { SelectIcon } from '@radix-ui/react-select'
 import { createTask, updateTask } from '@/actions/tasks.actions'
+import { useAppProvider } from '@/stores/AppStore'
 
 interface Props {
     boardId: string;
@@ -41,6 +42,9 @@ const formSchema = z.object({
 const TasksDataForm = ({ prev, closeDialog, boardId }: Props) => {
     const isEdit = !!prev
     const [isLoading, startLoading] = useTransition()
+
+    const { tasks } = useAppProvider()
+    const todosNumber = tasks.filter(t => t.status === 'todo').length
 
     const { sessionClaims, orgId, userId } = useAuth()
     const { supabase } = useSupabase()
@@ -97,6 +101,7 @@ const TasksDataForm = ({ prev, closeDialog, boardId }: Props) => {
         } else {
             toSave.created_by = userId
             toSave.status = 'todo'
+            toSave.order = todosNumber
 
             const response = await createTask(toSave)
             const result = JSON.parse(response) as ActionResponse<ITask>

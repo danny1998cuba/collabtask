@@ -133,3 +133,29 @@
 .lucide-loader-circle {
   @apply animate-spin;
 }
+
+.animation-down {
+  animation: accordion-down 0.2s ease-out;
+}
+
+.animation-up {
+  animation: accordion-up 0.2s ease-out;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: "var(--radix-accordion-content-height)";
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: "var(--radix-accordion-content-height)";
+  }
+  to {
+    height: 0;
+  }
+}

@@ -5,7 +5,6 @@ import { PropsWithChildren, useEffect, useState } from "react";
 import { useSession } from "@clerk/nextjs";
 import { create } from "zustand";
 
-
 type SupabaseStoreType = {
     supabase: SupabaseClient | null
 }

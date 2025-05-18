@@ -1,6 +1,8 @@
 import { ITask } from '@/models/task.model';
 import { auth } from '@clerk/nextjs/server';
 import React from 'react'
+import { KanbanBoard } from './kanban/KanbanBoard';
+import ClientHandler from './ClientHandler';
 
 interface Props {
     boardId: string;
@@ -25,12 +27,10 @@ const TasksKanban = async ({ boardId }: Props) => {
     const tasks: ITask[] = await getTasksByBoard(boardId);
 
     return (
-        <div>
-            <code>
-                <pre>{JSON.stringify(tasks, null, 2)}</pre>
-            </code>
-        </div>
-    )
+        <>
+            <ClientHandler tasks={tasks} />
+            <KanbanBoard tasks={tasks} />
+        </>)
 }
 
 export default TasksKanban

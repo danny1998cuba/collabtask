@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import LocalSidebar from '@/components/layout/sidebar/LocalSidebar';
 import LocalNavbar from '@/components/layout/LocalNavbar';
+import UsableArea from '@/components/layout/UsableArea';
 
 const ProtectedLayout = async ({ children }: PropsWithChildren) => {
     const { userId } = await auth();
@@ -15,13 +16,13 @@ const ProtectedLayout = async ({ children }: PropsWithChildren) => {
     return (
         <SidebarProvider>
             <LocalSidebar />
-            <div className='w-full'>
+            <UsableArea>
                 <LocalNavbar />
 
                 <main className='p-4' role='main'>
                     {children}
                 </main>
-            </div>
+            </UsableArea>
         </SidebarProvider>
     )
 }
