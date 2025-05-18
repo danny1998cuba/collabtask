@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
     DndContext,
@@ -33,6 +33,9 @@ export function KanbanBoard({ tasks: tasksReceived }: { tasks: ITask[] }) {
     const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
 
     const [tasks, setTasks] = useState<ITask[]>([...tasksReceived]);
+    useEffect(() => {
+        setTasks([...tasksReceived])
+    }, [tasksReceived])
 
     const [activeColumn, setActiveColumn] = useState<Column | null>(null);
 

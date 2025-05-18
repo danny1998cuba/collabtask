@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import React from 'react'
 import { KanbanBoard } from './kanban/KanbanBoard';
 import ClientHandler from './ClientHandler';
+import { stringify } from 'qs';
 
 interface Props {
     boardId: string;
@@ -24,7 +25,9 @@ const getTasksByBoard = async (boardId: string, query?: string) => {
 }
 
 const TasksKanban = async ({ boardId }: Props) => {
-    const tasks: ITask[] = await getTasksByBoard(boardId);
+    const tasks: ITask[] = await getTasksByBoard(boardId, stringify({
+        select: "*, assigned_to:assigned_to (id, first_name, last_name)"
+    }));
 
     return (
         <>

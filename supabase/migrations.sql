@@ -66,11 +66,11 @@ create table tasks (
   description text,
   status task_status default 'todo',
   order integer not null,
-  assigned_to text references users(id),
+  assigned_to text references users(id) on delete set null,
   created_by text references users(id),
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now(),
-  due_date date
+  due_date timestamp with time zone
 );
 
 -- Comentarios en tareas

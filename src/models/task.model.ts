@@ -21,11 +21,11 @@ export interface ITask {
     order: number;
     description?: string;
     status: TaskStatus;
-    assigned_to?: string | Partial<IUser>;
+    assigned_to?: string | Partial<IUser> | null;
     created_by: string | Partial<IUser>;
     created_at: Date;
     updated_at: Date;
-    due_date: Date;
+    due_date?: Date | null;
 
     board?: Partial<IBoard>
 }

@@ -25,6 +25,7 @@ import { useSupabase } from '@/utils/supabase/client'
 import { SelectIcon } from '@radix-ui/react-select'
 import { createTask, updateTask } from '@/actions/tasks.actions'
 import { useAppProvider } from '@/stores/AppStore'
+import { DateTimePicker } from '../ui/datetime-picker'
 
 interface Props {
     boardId: string;
@@ -56,19 +57,15 @@ const TasksDataForm = ({ prev, closeDialog, boardId }: Props) => {
         defaultValues: {
             title: prev?.title ?? "",
             description: prev?.description ?? "",
-            assignedTo: prev?.assigned_to as string | undefined,
-            due_date: prev?.due_date
+            assignedTo: !!prev?.assigned_to ? typeof prev.assigned_to === 'object' ? prev.assigned_to.id : prev.assigned_to : "",
+            due_date: prev?.due_date ? new Date(prev.due_date) : undefined
         }
     })
 
     useEffect(() => {
         if (orgId && supabase) {
-            console.log(orgId)
             supabase.from("organization_members").select("user:user_id (first_name, last_name, id)").eq("organization_id", orgId).then(r => {
                 const { data, error } = r
-
-                console.log(data)
-
                 if (error) { setMembers([]) }
                 else { setMembers(data as Partial<IOrganizationMember>[]) }
             })
@@ -82,8 +79,8 @@ const TasksDataForm = ({ prev, closeDialog, boardId }: Props) => {
             board_id: boardId,
             title: data.title.trim(),
             description: data.description && data.description.trim() !== "" ? data.description.trim() : undefined,
-            assigned_to: data.assignedTo,
-            due_date: data.due_date
+            assigned_to: data.assignedTo?.trim() !== "" ? data.assignedTo : null,
+            due_date: data.due_date ?? null
         }
 
         if (isEdit) {
@@ -91,7 +88,7 @@ const TasksDataForm = ({ prev, closeDialog, boardId }: Props) => {
             const result = JSON.parse(response) as ActionResponse<ITask>
 
             if (result.error) {
-                console.error(result.error);
+                console.error(result.message);
                 toast.error("Something happened while updating the task");
             } else {
                 console.log(result.data)
@@ -107,7 +104,7 @@ const TasksDataForm = ({ prev, closeDialog, boardId }: Props) => {
             const result = JSON.parse(response) as ActionResponse<ITask>
 
             if (result.error) {
-                console.error(result.error);
+                console.error(result.message);
                 toast.error("Something happened while creating the task");
             } else {
                 console.log(result.data)
@@ -140,7 +137,10 @@ const TasksDataForm = ({ prev, closeDialog, boardId }: Props) => {
                     render={({ field }) => (
                         <FormItem className="flex flex-col w-full">
                             <FormLabel>Due Date</FormLabel>
-                            <Popover>
+                            <DateTimePicker {...field} value={form.watch('due_date')} use12HourFormat timePicker={{ hour: true, minute: true }}
+                                clearable timezone={Intl.DateTimeFormat().resolvedOptions().timeZone}
+                                min={new Date()} />
+                            {/* <Popover>
                                 <PopoverTrigger asChild>
                                     <FormControl>
                                         <Button
@@ -155,6 +155,12 @@ const TasksDataForm = ({ prev, closeDialog, boardId }: Props) => {
                                             ) : (
                                                 <span>Pick a date</span>
                                             )}
+
+                                            {
+                                                field.value && <SelectIcon onClick={(e) => { e.stopPropagation(); console.log("reseting"); form.setValue("due_date", undefined, { shouldValidate: true }) }}>
+                                                    <CircleX className='cursor-pointer' />
+                                                </SelectIcon>
+                                            }
                                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                         </Button>
                                     </FormControl>
@@ -168,7 +174,7 @@ const TasksDataForm = ({ prev, closeDialog, boardId }: Props) => {
                                         initialFocus
                                     />
                                 </PopoverContent>
-                            </Popover>
+                            </Popover> */}
                             <FormMessage />
                         </FormItem>
                     )}
@@ -185,14 +191,7 @@ const TasksDataForm = ({ prev, closeDialog, boardId }: Props) => {
                                 <Select onValueChange={field.onChange} value={field.value}>
                                     <FormControl className='w-full'>
                                         <SelectTrigger >
-                                            <div className="flex justify-between items-center w-full">
-                                                <SelectValue />
-                                                {
-                                                    field.value && <SelectIcon onClick={(e) => { e.stopPropagation(); console.log("reseting"); form.setValue("assignedTo", "", { shouldValidate: true }) }}>
-                                                        <CircleX className='cursor-pointer' />
-                                                    </SelectIcon>
-                                                }
-                                            </div>
+                                            <SelectValue />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
@@ -202,6 +201,21 @@ const TasksDataForm = ({ prev, closeDialog, boardId }: Props) => {
                                                 .map(m =>
                                                     <SelectItem key={m.user!.id} value={m.user!.id!}>{m.user!.first_name} {m.user!.last_name}</SelectItem>
                                                 )
+                                        }
+
+                                        {
+                                            field.value &&
+                                            <Button
+                                                className="w-full px-2"
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={(e) => {
+                                                    e.stopPropagation()
+                                                    form.setValue('assignedTo', "")
+                                                }}
+                                            >
+                                                Clear
+                                            </Button>
                                         }
                                     </SelectContent>
                                 </Select>
