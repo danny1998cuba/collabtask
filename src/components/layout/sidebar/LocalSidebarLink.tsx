@@ -1,6 +1,6 @@
 'use client'
 
-import { SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
+import { SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { ComponentType, PropsWithChildren, ReactNode } from 'react'
@@ -14,11 +14,14 @@ type Props = {
 
 const LocalSidebarLink = ({ text, link, icon, Component = SidebarMenuItem }: Props) => {
     const pathname = usePathname()
+    const { isMobile, toggleSidebar } = useSidebar()
 
     return (
         <Component>
             <SidebarMenuButton asChild isActive={pathname === link}>
-                <Link href={link}>
+                <Link href={link} onClick={() => {
+                    if (isMobile) { toggleSidebar() }
+                }}>
                     {icon}
                     <span>{text}</span>
                 </Link>
